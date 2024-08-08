@@ -37,9 +37,13 @@
 ;; Enable 'company' in all sessions
 (global-company-mode t)
 
+;; Enable line numbers on all buffers
+(global-display-line-numbers-mode t)
+
 ;; Disable 'company' delay
 (setq company-idle-delay 0.0)
 
+;; Store backups in separate folder
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
       backup-by-copying t    ; Don't delink hardlinks
       version-control t      ; Use version numbers on backups
