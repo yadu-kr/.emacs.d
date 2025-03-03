@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;
@@ -35,7 +35,7 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        User Interface
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -43,23 +43,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
-;; Use fullscreen always
-;;(set-frame-parameter nil 'fullscreen 'fullboth)
-
-;; Smooth scrolling and mouse support
-(setq redisplay-dont-pause t
-      scroll-margin 1
-      scroll-step 1
-      scroll-conservatively 10000
-      scroll-preserve-screen-position 1
-      mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
-      mouse-wheel-progressive-speed nil            ;; don't accelerate scrolling
-      mouse-wheel-follow-mouse 't)                 ;; scroll window under mouse
-
-;; Line highlight
-(global-hl-line-mode)
-
-;; Inject some malevolence
+;; Download and enable Evil if not present already
 (unless (package-installed-p 'evil)
   (package-install 'evil))
 (require 'evil)
@@ -67,6 +51,7 @@
    evil-want-keybinding nil
    evil-want-C-i-jump nil
    evil-respect-visual-line-mode t
+   evil-undo-system 'undo-tree
    evil-want-minibuffer t)
 (evil-mode 1)
 (setq-default
@@ -79,7 +64,7 @@
    evil-visual-block-tag         " VB "
    evil-motion-state-tag         " M "
    evil-operator-state-tag       " O "
-   evil-replace-state-tag        " R ")
+   evil-replace-state-tag        " R "))
 
 ;; Enable line numbers on all buffers
 (global-display-line-numbers-mode t)
@@ -94,11 +79,9 @@
 ;;        Colours and Fonts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Use spacemacs-theme
-(unless (package-installed-p 'spacemacs-theme)
-  (package-install 'spacemacs-theme))
-(require 'spacemacs-theme)
+;; Customise theme
 (setq spacemacs-theme-comment-italic t)
+;; Load theme
 (load-theme 'spacemacs-dark)
 
 ;; UTF-8 everywhere
@@ -106,7 +89,7 @@
 
 ;;Font of choice
 (add-to-list 'default-frame-alist
-	     '(font . "FiraCode Nerd Font-11"))
+	     '(font . "FiraCode Nerd Font-10"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -129,7 +112,6 @@
 
 ;; Never use tabs
 (setq indent-tabs-mode nil)
-
 ;; Set tab width to 4 spaces
 (setq tab-width 4)
 
@@ -139,22 +121,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Evil-snipe - vim-sneak emulation
-(unless (package-installed-p 'evil-snipe)
-  (package-install 'evil-snipe))
 (require 'evil-snipe)
 (evil-snipe-mode 1)
 (setq evil-snipe-scope 'buffer)
 (setq evil-snipe-repeat-scope 'buffer)
 (setq evil-snipe-spillover-scope 'whole-buffer)
-
-;; Use doom-modeline
-(unless (package-installed-p 'doom-modeline)
-  (package-install 'doom-modeline))
-(require 'doom-modeline)
-(doom-modeline-mode 1)
-:config
-(setq doom-modeline-major-mode-icon t
-      doom-modeline-height 30)
 
 ;; Add Nerd icons
 (use-package nerd-icons :defer t
