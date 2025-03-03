@@ -152,14 +152,15 @@
   (package-install 'doom-modeline))
 (require 'doom-modeline)
 (doom-modeline-mode 1)
-:config
-(setq doom-modeline-major-mode-icon t
+  :config
+  (setq doom-modeline-major-mode-icon t
       doom-modeline-height 30)
 
 ;; Add Nerd icons
-(use-package nerd-icons :defer t
+(unless (package-installed-p 'nerd-icons)
+  (package-install 'nerd-icons)) 
   :custom
-  (nerd-icons-color-icons nil))
+  (setq nerd-icons-color-icons nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Misc
