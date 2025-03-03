@@ -14,6 +14,9 @@
 ;;        General settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Disable TLS1.3 (use only for Emacs <= 26.2)
+;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 ;; Do not use 'init.el' for 'custom-*' code, use 'custom-file.el' instead
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
