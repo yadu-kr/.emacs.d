@@ -1,4 +1,5 @@
 .DS_Store
-auto-save-list
-backup
 *.log
+auto-save-list/
+backup/
+elpa/

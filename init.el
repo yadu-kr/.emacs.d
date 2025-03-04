@@ -20,6 +20,9 @@
 ;; Faster start by reducing garbage collection rate
 (setq gc-cons-threshold (* 50 1000 1000))
 
+;; Skip checking signatures of packages
+(setq package-check-signature nil)
+
 ;; Do not use 'init.el' for 'custom-*' code, use 'custom-file.el' instead
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
