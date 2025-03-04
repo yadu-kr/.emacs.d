@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;
@@ -16,6 +16,9 @@
 
 ;; Disable TLS1.3 (use only for Emacs <= 26.2)
 ;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+;; Faster start by reducing garbage collection rate
+(setq gc-cons-threshold (* 50 1000 1000))
 
 ;; Do not use 'init.el' for 'custom-*' code, use 'custom-file.el' instead
 (setq custom-file "~/.emacs.d/custom-file.el")
@@ -47,7 +50,7 @@
 (menu-bar-mode -1)
 
 ;; Use fullscreen always
-;;(set-frame-parameter nil 'fullscreen 'fullboth)
+(set-frame-parameter nil 'fullscreen 'fullboth)
 
 ;; Smooth scrolling and mouse support
 (setq redisplay-dont-pause t
@@ -61,6 +64,9 @@
 
 ;; Line highlight
 (global-hl-line-mode)
+
+;; Display column number on modeline
+(column-number-mode)
 
 ;; Inject some malevolence
 (unless (package-installed-p 'evil)
@@ -118,11 +124,11 @@
 
 ;; Store backups in separate folder
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-      backup-by-copying t    ; Don't delink hardlinks
-      version-control t      ; Use version numbers on backups
-      delete-old-versions t  ; Automatically delete excess backups
-      kept-new-versions 20   ; Number of new versios to keep
-      kept-old-versions 5    ; Number of old version to keep
+      backup-by-copying t    ;; Don't delink hardlinks
+      version-control t      ;; Use version numbers on backups
+      delete-old-versions t  ;; Automatically delete excess backups
+      kept-new-versions 20   ;; Number of new version to keep
+      kept-old-versions 5    ;; Number of old version to keep
       )
 
 
@@ -141,29 +147,25 @@
 ;;        Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Evil-snipe - vim-sneak emulation
-(unless (package-installed-p 'evil-snipe)
-  (package-install 'evil-snipe))
-(require 'evil-snipe)
-(evil-snipe-mode 1)
-(setq evil-snipe-scope 'buffer)
-(setq evil-snipe-repeat-scope 'buffer)
-(setq evil-snipe-spillover-scope 'whole-buffer)
+;; Avy to jump around
+(unless (package-installed-p 'avy)
+  (package-install 'avy))
+(evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
+(setq avy-background t
+      avy-single-candidate-jump nil)
 
 ;; Use doom-modeline
 (unless (package-installed-p 'doom-modeline)
   (package-install 'doom-modeline))
 (require 'doom-modeline)
 (doom-modeline-mode 1)
-  :config
-  (setq doom-modeline-major-mode-icon t
-      doom-modeline-height 30)
+(setq doom-modeline-major-mode-icon t
+      doom-modeline-height 35)
 
 ;; Add Nerd icons
 (unless (package-installed-p 'nerd-icons)
   (package-install 'nerd-icons)) 
-  :custom
-  (setq nerd-icons-color-icons nil)
+(setq nerd-icons-color-icons nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Misc
