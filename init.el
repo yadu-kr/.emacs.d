@@ -96,11 +96,6 @@
 ;; Enable line numbers on all buffers
 (global-display-line-numbers-mode t)
 
-;; Enable 'company' in all sessions
-(global-company-mode t)
-;; Disable 'company' delay
-(setq company-idle-delay 0.0)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Colours and Fonts
@@ -149,6 +144,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Company for autocompletion
+(unless (package-installed-p 'company)
+  (package-install 'company))
+(global-company-mode t)
+(setq company-idle-delay 0.0)
 
 ;; Avy to jump around
 (unless (package-installed-p 'avy)
