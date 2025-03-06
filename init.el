@@ -165,7 +165,7 @@
 (require 'doom-modeline)
 (doom-modeline-mode 1)
 (setq doom-modeline-major-mode-icon t
-      doom-modeline-height 35)
+      doom-modeline-height 30)
 
 ;; Add Nerd icons
 (unless (package-installed-p 'nerd-icons)
