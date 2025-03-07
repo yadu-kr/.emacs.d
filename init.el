@@ -48,9 +48,10 @@
 ;;        User Interface
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Disable tool bar, menu bar
+;; Disable tool bar, menu bar, and scroll bar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 ;; Use fullscreen always
 (set-frame-parameter nil 'fullscreen 'fullboth)
@@ -164,7 +165,7 @@
 (require 'doom-modeline)
 (doom-modeline-mode 1)
 (setq doom-modeline-major-mode-icon t
-      doom-modeline-height 35)
+      doom-modeline-height 30)
 
 ;; Commentary for supercharging comments
 (unless (package-installed-p 'evil-commentary)
@@ -183,4 +184,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Misc
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;        EOF - Vanilla Emacs Config
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
