@@ -166,6 +166,16 @@
 (setq doom-modeline-major-mode-icon t
       doom-modeline-height 35)
 
+;; Commentary for supercharging comments
+(unless (package-installed-p 'evil-commentary)
+  (package-install 'evil-commentary))
+(require 'evil-commentary)
+(evil-commentary-mode)
+
+;; Read, annotate and work with pdfs
+(unless (package-installed-p 'pdf-tools)
+  (package-install 'pdf-tools))
+
 ;; Add Nerd icons
 (unless (package-installed-p 'nerd-icons)
   (package-install 'nerd-icons)) 
