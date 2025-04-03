@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Disable TLS1.3 (use only for Emacs <= 26.2)
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;; Faster start by reducing garbage collection rate
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -113,30 +113,6 @@
    evil-operator-state-tag       " O "
    evil-replace-state-tag        " R "))
 
-
-
-;; (unless (package-installed-p 'evil)
-;;   (package-install 'evil))
-;; (require 'evil)
-;; (setq evil-want-integration t
-;;    evil-want-keybinding nil
-;;    evil-want-C-i-jump nil
-;;    evil-respect-visual-line-mode t
-;;    evil-undo-system 'undo-tree
-;;    evil-want-minibuffer t)
-;; (evil-mode 1)
-;; (setq-default
-;;    evil-emacs-state-tag          " E "
-;;    evil-normal-state-tag         " N "
-;;    evil-insert-state-tag         " I "
-;;    evil-visual-char-tag          " V "
-;;    evil-visual-line-tag          " VL "
-;;    evil-visual-screen-line-tag   " VSL "
-;;    evil-visual-block-tag         " VB "
-;;    evil-motion-state-tag         " M "
-;;    evil-operator-state-tag       " O "
-;;    evil-replace-state-tag        " R ")
-
 ;; Enable line numbers on all buffers
 (global-display-line-numbers-mode t)
 
@@ -146,11 +122,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Use spacemacs-theme
-(unless (package-installed-p 'spacemacs-theme)
-  (package-install 'spacemacs-theme))
-(require 'spacemacs-theme)
-(setq spacemacs-theme-comment-italic t)
-(load-theme 'spacemacs-dark)
+(use-package spacemacs-theme
+  :ensure t
+  :init
+  (setq spacemacs-theme-comment-italic t)
+  :config
+  (load-theme 'spacemacs-dark))
 
 ;; UTF-8 everywhere
 (setq prefer-coding-system 'utf-8)
@@ -190,40 +167,44 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Company for autocompletion
-(unless (package-installed-p 'company)
-  (package-install 'company))
-(global-company-mode t)
-(setq company-idle-delay 0.0)
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode t)
+  (setq company-idle-delay 0.0))
 
 ;; Avy to jump around
-(unless (package-installed-p 'avy)
-  (package-install 'avy))
-(evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
-(setq avy-background t
-      avy-single-candidate-jump nil)
+(use-package avy
+  :ensure t
+  :init
+  (evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
+  (setq avy-background t
+        avy-single-candidate-jump nil))
 
 ;; Use doom-modeline
-(unless (package-installed-p 'doom-modeline)
-  (package-install 'doom-modeline))
-(require 'doom-modeline)
-(doom-modeline-mode 1)
-(setq doom-modeline-major-mode-icon t
-      doom-modeline-height 30)
+(use-package doom-modeline
+  :ensure t
+  :after (spacemacs-theme)
+  :config
+  (doom-modeline-mode 1)
+  (setq doom-modeline-major-mode-icon t
+        doom-modeline-height 30))
 
 ;; Commentary for supercharging comments
-(unless (package-installed-p 'evil-commentary)
-  (package-install 'evil-commentary))
-(require 'evil-commentary)
-(evil-commentary-mode)
+(use-package evil-commentary
+  :ensure t
+  :config
+  (evil-commentary-mode))
 
 ;; Read, annotate and work with pdfs
-;; (unless (package-installed-p 'pdf-tools)
-;;   (package-install 'pdf-tools))
+ (use-package pdf-tools
+   :ensure t)
 
 ;; Add Nerd icons
-(unless (package-installed-p 'nerd-icons)
-  (package-install 'nerd-icons)) 
-(setq nerd-icons-color-icons nil)
+(use-package nerd-icons
+  :ensure t
+  :config
+  (setq nerd-icons-color-icons nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Misc
