@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Disable TLS1.3 (use only for Emacs <= 26.2)
-;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;; Faster start by reducing garbage collection rate
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -29,11 +29,22 @@
 
 ;; Require and initialise package
 (require 'package)
-
 ;; Add 'melpa' to 'package-archives'
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+(package-refresh-contents)
+
+;; use-package to help with package management
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(require 'use-package)
+
+;; Stop littering persistent/config data files
+(use-package no-littering
+  :ensure t
+  :config
+  (no-littering-theme-backups))
 
 ;; Do not show startup screen, inhibit scratch buffer message
 (setq inhibit-startup-message t)
@@ -73,16 +84,24 @@
 (column-number-mode)
 
 ;; Inject some malevolence
-(unless (package-installed-p 'evil)
-  (package-install 'evil))
-(require 'evil)
-(setq evil-want-integration t
-   evil-want-keybinding nil
-   evil-want-C-i-jump nil
-   evil-respect-visual-line-mode t
-   evil-want-minibuffer t)
-(evil-mode 1)
-(setq-default
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode 1))
+
+;; Inject some malevolence
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t
+	    evil-want-keybinding nil
+	    evil-want-C-i-jump nil
+	    evil-respect-visual-line-mode t
+	    evil-undo-system 'undo-tree
+	    evil-want-minibuffer t)
+  :config
+  (evil-mode 1)
+  (setq-default
    evil-emacs-state-tag          " E "
    evil-normal-state-tag         " N "
    evil-insert-state-tag         " I "
@@ -92,7 +111,31 @@
    evil-visual-block-tag         " VB "
    evil-motion-state-tag         " M "
    evil-operator-state-tag       " O "
-   evil-replace-state-tag        " R ")
+   evil-replace-state-tag        " R "))
+
+
+
+;; (unless (package-installed-p 'evil)
+;;   (package-install 'evil))
+;; (require 'evil)
+;; (setq evil-want-integration t
+;;    evil-want-keybinding nil
+;;    evil-want-C-i-jump nil
+;;    evil-respect-visual-line-mode t
+;;    evil-undo-system 'undo-tree
+;;    evil-want-minibuffer t)
+;; (evil-mode 1)
+;; (setq-default
+;;    evil-emacs-state-tag          " E "
+;;    evil-normal-state-tag         " N "
+;;    evil-insert-state-tag         " I "
+;;    evil-visual-char-tag          " V "
+;;    evil-visual-line-tag          " VL "
+;;    evil-visual-screen-line-tag   " VSL "
+;;    evil-visual-block-tag         " VB "
+;;    evil-motion-state-tag         " M "
+;;    evil-operator-state-tag       " O "
+;;    evil-replace-state-tag        " R ")
 
 ;; Enable line numbers on all buffers
 (global-display-line-numbers-mode t)
@@ -174,8 +217,8 @@
 (evil-commentary-mode)
 
 ;; Read, annotate and work with pdfs
-(unless (package-installed-p 'pdf-tools)
-  (package-install 'pdf-tools))
+;; (unless (package-installed-p 'pdf-tools)
+;;   (package-install 'pdf-tools))
 
 ;; Add Nerd icons
 (unless (package-installed-p 'nerd-icons)
