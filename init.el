@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Disable TLS1.3 (use only for Emacs <= 26.2)
-;;(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;; Faster start by reducing garbage collection rate
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -36,12 +36,14 @@
 
 ;; use-package to help with package management
 (unless (package-installed-p 'use-package)
+  (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 
 ;; Stop littering persistent/config data files
 (use-package no-littering
-  :ensure t
   :config
   (no-littering-theme-backups))
 
@@ -82,15 +84,16 @@
 ;; Display column number on modeline
 (column-number-mode)
 
-;; Inject some malevolence
+;; Enable line numbers on all buffers
+(global-display-line-numbers-mode t)
+
+;; vim-like undo
 (use-package undo-tree
-  :ensure t
   :config
   (global-undo-tree-mode 1))
 
 ;; Inject some malevolence
 (use-package evil
-  :ensure t
   :init
   (setq evil-want-integration t
 	    evil-want-keybinding nil
@@ -112,9 +115,16 @@
    evil-operator-state-tag       " O "
    evil-replace-state-tag        " R "))
 
-;; Enable line numbers on all buffers
-(global-display-line-numbers-mode t)
+;; evil-collection for better key bindings
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
+;; Highlighting updgrade with evil-anzu
+(use-package evil-anzu
+  :config
+  (global-anzu-mode +1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Colours and Fonts
@@ -122,7 +132,6 @@
 
 ;; Use spacemacs-theme
 (use-package spacemacs-theme
-  :ensure t
   :init
   (setq spacemacs-theme-comment-italic t)
   :config
@@ -160,6 +169,9 @@
 ;; Set tab width to 4 spaces
 (setq tab-width 4)
 
+;; Turn off line wrapping
+(set-default 'truncate-lines t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Packages
@@ -167,14 +179,19 @@
 
 ;; Company for autocompletion
 (use-package company
-  :ensure t
   :config
   (global-company-mode t)
   (setq company-idle-delay 0.0))
 
+;; Quick help for keybindings
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+
 ;; Avy to jump around
 (use-package avy
-  :ensure t
   :init
   (evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
   (setq avy-background t
@@ -182,7 +199,6 @@
 
 ;; Use doom-modeline
 (use-package doom-modeline
-  :ensure t
   :after (spacemacs-theme)
   :config
   (doom-modeline-mode 1)
@@ -191,17 +207,14 @@
 
 ;; Commentary for supercharging comments
 (use-package evil-commentary
-  :ensure t
   :config
   (evil-commentary-mode))
 
 ;; Read, annotate and work with pdfs
- (use-package pdf-tools
-   :ensure t)
+(use-package pdf-tools)
 
 ;; Add Nerd icons
 (use-package nerd-icons
-  :ensure t
   :config
   (setq nerd-icons-color-icons nil))
 
