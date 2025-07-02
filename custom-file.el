@@ -9,7 +9,7 @@
  '(evil-undo-system (quote undo-tree))
  '(package-selected-packages
    (quote
-    (use-package undo-tree avy company doom-modeline evil-commentary magit pdf-tools spacemacs-theme))))
+    (vterm vivado-mode which-key use-package undo-tree avy company doom-modeline evil-commentary magit pdf-tools spacemacs-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
