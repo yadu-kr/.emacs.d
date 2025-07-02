@@ -27,6 +27,9 @@
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
 
+;; Add custom lisp directory to load path
+(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
+
 ;; Require and initialise package
 (require 'package)
 ;; Add 'melpa' to 'package-archives'
@@ -96,11 +99,11 @@
 (use-package evil
   :init
   (setq evil-want-integration t
-	    evil-want-keybinding nil
-	    evil-want-C-i-jump nil
-	    evil-respect-visual-line-mode t
-	    evil-undo-system 'undo-tree
-	    evil-want-minibuffer t)
+	evil-want-keybinding nil
+	evil-want-C-i-jump nil
+	evil-respect-visual-line-mode t
+	evil-undo-system 'undo-tree
+	evil-want-minibuffer t)
   :config
   (evil-mode 1)
   (setq-default
@@ -126,6 +129,8 @@
   :config
   (global-anzu-mode +1))
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Colours and Fonts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -145,6 +150,7 @@
 	     '(font . "FiraCode Nerd Font-11"))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Files and Backups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,6 +163,7 @@
       kept-new-versions 20   ;; Number of new version to keep
       kept-old-versions 5    ;; Number of old version to keep
       )
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -173,15 +180,33 @@
 (set-default 'truncate-lines t)
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Better terminal emulation
+(use-package vterm
+  :config
+  (setq vterm-max-scrollback 10000))
 
 ;; Company for autocompletion
 (use-package company
   :config
   (global-company-mode t)
   (setq company-idle-delay 0.0))
+
+;; Verilog support
+(use-package verilog-mode
+  :config
+  (setq verilog-auto-newline nil))
+
+;; vivado-mode for editing XDC and Tcl files
+(use-package vivado-mode
+  :config
+  (setq auto-mode-alist (cons  '("\\.xdc\\'" . vivado-mode) auto-mode-alist))
+  (add-hook 'vivado-mode-hook #'(lambda () (font-lock-mode 1)))
+  (autoload 'vivado-mode "vivado-mode"))
 
 ;; Quick help for keybindings
 (use-package which-key
@@ -217,6 +242,8 @@
 (use-package nerd-icons
   :config
   (setq nerd-icons-color-icons nil))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;        Misc
