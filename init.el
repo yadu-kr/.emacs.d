@@ -14,8 +14,9 @@
 ;;        General settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Disable TLS1.3 (use only for Emacs <= 26.2)
-;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;; Disable TLS1.3 (only for Emacs <= 26.2)
+(if (version<= emacs-version "26.2")
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 ;; Faster start by reducing garbage collection rate
 (setq gc-cons-threshold (* 50 1000 1000))
