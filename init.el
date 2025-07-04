@@ -1,4 +1,5 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; -*- lexical-binding: t -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;
@@ -7,7 +8,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -25,7 +25,7 @@
 (setq package-check-signature nil)
 
 ;; Do not use 'init.el' for 'custom-*' code, use 'custom-file.el' instead
-(setq custom-file "~/.emacs.d/custom-file.el")
+(setq custom-file (concat user-emacs-directory "custom-file.el"))
 (load-file custom-file)
 
 ;; Add custom lisp directory to load path
@@ -204,10 +204,19 @@
 
 ;; vivado-mode for editing XDC and Tcl files
 (use-package vivado-mode
+  :load-path load-path
   :config
   (setq auto-mode-alist (cons  '("\\.xdc\\'" . vivado-mode) auto-mode-alist))
   (add-hook 'vivado-mode-hook #'(lambda () (font-lock-mode 1)))
   (autoload 'vivado-mode "vivado-mode"))
+
+;; git interfacing with magit
+(use-package magit
+  :commands (magit-status magit-get-current-branch)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  :init
+  (autoload 'magit-project-status "magit-extras"))
 
 ;; Quick help for keybindings
 (use-package which-key
