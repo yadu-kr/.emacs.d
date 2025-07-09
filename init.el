@@ -125,10 +125,9 @@
   :config
   (evil-collection-init))
 
-;; Highlighting updgrade with evil-anzu
-(use-package evil-anzu
-  :config
-  (global-anzu-mode +1))
+;; Customise ediff buffer setup
+(setq ediff-window-setup-function 'ediff-setup-windows-plain
+      ediff-split-window-function 'split-window-horizontally)
 
 
 
@@ -188,14 +187,38 @@
 
 ;; Better terminal emulation
 (use-package vterm
+  :after evil
   :config
-  (setq vterm-max-scrollback 10000))
+  (setq vterm-max-scrollback 10000)
+  (evil-set-initial-state 'vterm-mode 'insert))
 
 ;; Company for autocompletion
 (use-package company
   :config
   (global-company-mode t)
   (setq company-idle-delay 0.0))
+
+;; IDE functionality using eglot
+(use-package eglot
+  :hook
+  ((verilog-mode-hook . eglot-ensure)
+   (c-mode . eglot-ensure)
+   (c++-mode . eglot-ensure)      
+   (c-ts-mode . eglot-ensure)     
+   (c++-ts-mode . eglot-ensure)
+   (python-mode . eglot-ensure)
+   (python-ts-mode . eglot-ensure))
+  :config
+  (setq eglot-autoshutdown t))
+
+;; Python LSP
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '((python-mode python-ts-mode) . ("pylsp"))))
+
+;; Verilog LSP
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(verilog-mode . ("verible-verilog-ls"))))
 
 ;; Verilog support
 (use-package verilog-mode
@@ -218,12 +241,32 @@
   :init
   (autoload 'magit-project-status "magit-extras"))
 
+;; Commentary for supercharging comments
+(use-package evil-commentary
+  :config
+  (evil-commentary-mode))
+
+;; Highlighting updgrade with evil-anzu
+(use-package evil-anzu
+  :config
+  (global-anzu-mode +1))
+
+;; Delimiter colouring
+(use-package rainbow-delimiters
+  :hook ((org-mode prog-mode) . rainbow-delimiters-mode))
+
+;; Indentation help
+(use-package highlight-indent-guides
+  :config
+  (setq highlight-indent-guides-method 'column)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+
 ;; Quick help for keybindings
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setq which-key-idle-delay 0.3))
+  (setq which-key-idle-delay 0.2))
 
 ;; Avy to jump around
 (use-package avy
@@ -240,13 +283,8 @@
   (setq doom-modeline-major-mode-icon t
         doom-modeline-height 30))
 
-;; Commentary for supercharging comments
-(use-package evil-commentary
-  :config
-  (evil-commentary-mode))
-
 ;; Read, annotate and work with pdfs
-(use-package pdf-tools)
+;; (use-package pdf-tools)
 
 ;; Add Nerd icons
 (use-package nerd-icons
