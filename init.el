@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t; -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,7 +70,7 @@
 (scroll-bar-mode -1)
 
 ;; Use fullscreen always
-(set-frame-parameter nil 'fullscreen 'fullboth)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Smooth scrolling and mouse support
 (setq redisplay-dont-pause t
@@ -187,7 +187,7 @@
 
 ;; Better terminal emulation
 (use-package vterm
-  :after evil
+  :after evil-collection
   :config
   (setq vterm-max-scrollback 10000)
   (evil-set-initial-state 'vterm-mode 'insert))
@@ -233,6 +233,12 @@
   (add-hook 'vivado-mode-hook #'(lambda () (font-lock-mode 1)))
   (autoload 'vivado-mode "vivado-mode"))
 
+;; gptel for LLM model interfacing
+(use-package gptel
+  :config
+  (setq gptel-model 'claude-3.7-sonnet
+	gptel-backend (gptel-make-gh-copilot "Copilot")))
+
 ;; git interfacing with magit
 (use-package magit
   :commands (magit-status magit-get-current-branch)
@@ -257,8 +263,12 @@
 
 ;; Indentation help
 (use-package highlight-indent-guides
+  :after (spacemacs-theme)
   :config
-  (setq highlight-indent-guides-method 'column)
+  (setq highlight-indent-guides-method 'character
+	highlight-indent-guides-character ?|
+	highlight-indent-guides-auto-enabled nil)
+  (set-face-foreground 'highlight-indent-guides-character-face "DimGray")
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 
 ;; Quick help for keybindings
@@ -284,7 +294,18 @@
         doom-modeline-height 30))
 
 ;; Read, annotate and work with pdfs
-;; (use-package pdf-tools)
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :config
+  (setq-default pdf-view-display-size 'fit-page)
+  (setq pdf-view-use-scaling t
+  	pdf-view-use-imagemagick nil)
+  ;; Fix flickering pdfs when evil-mode is enabled
+  (add-hook 'pdf-view-mode-hook #'(lambda () (setq-local evil-normal-state-cursor (list nil))))
+  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
+  (add-hook 'pdf-view-midnight-minor-mode-hook (lambda () (setq pdf-view-midnight-colors '("#ebdbb2" . "#282828"))))
+  (add-hook 'pdf-view-mode-hook 'pdf-history-minor-mode)
+  (add-hook 'pdf-view-mode-hook 'pdf-isearch-minor-mode))
 
 ;; Add Nerd icons
 (use-package nerd-icons
