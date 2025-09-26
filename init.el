@@ -192,38 +192,74 @@
   (setq vterm-max-scrollback 10000)
   (evil-set-initial-state 'vterm-mode 'insert))
 
-;; Company for autocompletion
-(use-package company
-  :config
-  (global-company-mode t)
-  (setq company-idle-delay 0.0))
+;; Minibuffer completion using Vertico
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  (vertico-resize nil)
+  :init
+  (vertico-mode 1))
 
+;; Orderless for better completion candidates
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; Minibuffer command annotations with Marginalia
+(use-package marginalia
+  :after vertico
+  :init
+  (marginalia-mode 1)) 
+
+;; Nerd icons completion to work with Marginalia
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+;; Corfu for in-buffer autocompletion
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.1)
+  (corfu-quit-no-match 'separator)
+  :config
+  (keymap-unset corfu-map "RET")
+  (setq tab-always-indent 'complete)
+  :init
+  (global-corfu-mode))
+  
 ;; IDE functionality using eglot
 (use-package eglot
   :hook
-  ((verilog-mode-hook . eglot-ensure)
-   (c-mode . eglot-ensure)
+  ((c-mode . eglot-ensure)
    (c++-mode . eglot-ensure)      
    (c-ts-mode . eglot-ensure)     
-   (c++-ts-mode . eglot-ensure)
    (python-mode . eglot-ensure)
-   (python-ts-mode . eglot-ensure))
+   (verilog-mode . eglot-ensure))
   :config
-  (setq eglot-autoshutdown t))
-
-;; Python LSP
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs '((python-mode python-ts-mode) . ("pylsp"))))
-
-;; Verilog LSP
-(with-eval-after-load 'eglot
+  (setq eglot-autoshutdown t)
   (add-to-list 'eglot-server-programs
-               '(verilog-mode . ("verible-verilog-ls"))))
+	       '(verilog-mode . ("verible-verilog-ls"))
+	       '(python-mode . ("pylsp")))
+  (setq eglot-workspace-configuration
+	'(:pylsp (:plugins (:flake8 (:enabled t)
+			    :pylint (:enabled t)
+			    :mypy (:enabled t))))))
 
 ;; Verilog support
 (use-package verilog-mode
   :config
-  (setq verilog-auto-newline nil))
+  (setq verilog-auto-newline nil
+	verilog-indent-level 2
+	verilog-indent-level-module 2
+	verilog-indent-level-declaration 2
+	verilog-indent-level-behavioral 2
+	verilog-indent-level-directive 1))
 
 ;; vivado-mode for editing XDC and Tcl files
 (use-package vivado-mode
