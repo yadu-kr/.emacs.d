@@ -106,22 +106,27 @@
 	evil-undo-system 'undo-tree
 	evil-want-minibuffer t)
   :config
+  (setq evil-split-window-below t
+	evil-vsplit-window-right t
+	evil-move-cursor-back nil)
   (evil-mode 1)
   (setq-default
-   evil-emacs-state-tag          " E "
-   evil-normal-state-tag         " N "
-   evil-insert-state-tag         " I "
-   evil-visual-char-tag          " V "
-   evil-visual-line-tag          " VL "
-   evil-visual-screen-line-tag   " VSL "
-   evil-visual-block-tag         " VB "
-   evil-motion-state-tag         " M "
-   evil-operator-state-tag       " O "
-   evil-replace-state-tag        " R "))
+	evil-emacs-state-tag          " E "
+	evil-normal-state-tag         " N "
+	evil-insert-state-tag         " I "
+	evil-visual-char-tag          " V "
+	evil-visual-line-tag          " VL "
+	evil-visual-screen-line-tag   " VSL "
+	evil-visual-block-tag         " VB "
+	evil-motion-state-tag         " M "
+	evil-operator-state-tag       " O "
+	evil-replace-state-tag        " R "))
 
 ;; evil-collection for better key bindings
 (use-package evil-collection
   :after evil
+  :init
+  (setq evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init))
 
@@ -191,6 +196,11 @@
   :config
   (setq vterm-max-scrollback 10000)
   (evil-set-initial-state 'vterm-mode 'insert))
+(add-hook 'vterm-mode-hook
+	  (lambda ()
+	    (display-line-numbers-mode 0)
+	    (setq-local fringe-mode 0)
+	    (setq mode-line-format nil)))
 
 ;; Minibuffer completion using Vertico
 (use-package vertico
@@ -232,7 +242,12 @@
   (setq tab-always-indent 'complete)
   :init
   (global-corfu-mode))
-  
+
+;; Customise eldoc
+(use-package eldoc
+  :config
+  (setq eldoc-echo-area-use-multiline-p nil))
+
 ;; IDE functionality using eglot
 (use-package eglot
   :hook
@@ -261,13 +276,23 @@
 	verilog-indent-level-behavioral 2
 	verilog-indent-level-directive 1))
 
+;; Markdown support
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+
 ;; vivado-mode for editing XDC and Tcl files
 (use-package vivado-mode
   :load-path load-path
   :config
-  (setq auto-mode-alist (cons  '("\\.xdc\\'" . vivado-mode) auto-mode-alist))
+  (setq auto-mode-alist
+        (append '(("\\.xdc\\'" . vivado-mode)
+                  ("\\.sdc\\'" . vivado-mode)
+                  ("\\.tcl\\'" . vivado-mode))
+                auto-mode-alist))
   (add-hook 'vivado-mode-hook #'(lambda () (font-lock-mode 1)))
   (autoload 'vivado-mode "vivado-mode"))
+
 
 ;; gptel for LLM model interfacing
 (use-package gptel
