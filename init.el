@@ -184,6 +184,9 @@
 ;; Turn off line wrapping
 (set-default 'truncate-lines t)
 
+;; Auto-insert closing delimiters
+(electric-pair-mode t)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -246,7 +249,8 @@
 ;; Customise eldoc
 (use-package eldoc
   :config
-  (setq eldoc-echo-area-use-multiline-p nil))
+  ;; (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eldoc-idle-delay 1.5))
 
 ;; IDE functionality using eglot
 (use-package eglot
@@ -372,6 +376,13 @@
 (use-package nerd-icons
   :config
   (setq nerd-icons-color-icons nil))
+
+;; Dim inactive buffers
+(use-package dimmer
+  :config
+  (setq dimmer-fraction 0.5)
+  :init
+  (dimmer-mode t))
 
 
 
