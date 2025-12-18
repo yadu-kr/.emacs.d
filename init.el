@@ -89,16 +89,16 @@
 	evil-move-cursor-back nil)
   (evil-mode 1)
   (setq-default
-	evil-emacs-state-tag          " E "
-	evil-normal-state-tag         " N "
-	evil-insert-state-tag         " I "
-	evil-visual-char-tag          " V "
-	evil-visual-line-tag          " VL "
-	evil-visual-screen-line-tag   " VSL "
-	evil-visual-block-tag         " VB "
-	evil-motion-state-tag         " M "
-	evil-operator-state-tag       " O "
-	evil-replace-state-tag        " R "))
+	evil-emacs-state-tag          "E"
+	evil-normal-state-tag         "N"
+	evil-insert-state-tag         "I"
+	evil-visual-char-tag          "V"
+	evil-visual-line-tag          "VL"
+	evil-visual-screen-line-tag   "VSL"
+	evil-visual-block-tag         "VB"
+	evil-motion-state-tag         "M"
+	evil-operator-state-tag       "O"
+	evil-replace-state-tag        "R"))
 
 ;; evil-collection for better key bindings
 (use-package evil-collection
@@ -167,11 +167,13 @@
 ;; Use doom-modeline
 (use-package doom-modeline
   :after (spacemacs-theme)
+  :init
+  (setq doom-modeline-modal-icon nil
+	doom-modeline-major-mode-icon nil
+	doom-modeline-buffer-encoding nil
+	doom-modeline-height 25))
   :config
   (doom-modeline-mode 1)
-  (setq doom-modeline-major-mode-icon t
-	doom-modeline-modal-icon nil
-        doom-modeline-height 30))
 
 ;; Line highlight
 (global-hl-line-mode)
