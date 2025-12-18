@@ -152,10 +152,10 @@
   :init
   (setq spacemacs-theme-comment-italic t)
   :config
-  (load-theme 'spacemacs-dark)
-  (add-hook 'server-after-make-frame-hook
-	    (lambda ()
-	      (load-theme 'spacemacs-dark t))))
+  (load-theme 'spacemacs-dark))
+(add-hook 'server-after-make-frame-hook
+	(lambda ()
+	    (load-theme 'spacemacs-dark t)))
 
 ;; UTF-8 everywhere
 (setq prefer-coding-system 'utf-8)
@@ -171,9 +171,9 @@
   (setq doom-modeline-modal-icon nil
 	doom-modeline-major-mode-icon nil
 	doom-modeline-buffer-encoding nil
-	doom-modeline-height 25))
+	doom-modeline-height 25)
   :config
-  (doom-modeline-mode 1)
+  (doom-modeline-mode 1))
 
 ;; Line highlight
 (global-hl-line-mode)
@@ -208,7 +208,6 @@
 ;;        Cache Files and Backups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
 ;; Stop littering persistent/config data files
 (use-package no-littering
   :init
@@ -305,7 +304,7 @@
   (corfu-auto-delay 0.2)
   (corfu-quit-no-match 'separator)
   (corfu-preselect 'prompt)
-  :config
+  ;; :config
   ;; (keymap-unset corfu-map "RET")
   ;; (setq tab-always-indent 'complete)
   :bind
@@ -315,10 +314,10 @@
 	("S-TAB" . corfu-previous)
 	([backtab] . corfu-previous))
   :init
-  (global-corfu-mode)
-  (add-hook 'eshell-mode-hook (lambda ()
-                              (setq-local corfu-auto nil)
-                              (corfu-mode))))
+  (global-corfu-mode))
+(add-hook 'eshell-mode-hook (lambda ()
+			    (setq-local corfu-auto nil)
+			    (corfu-mode)))
 
 ;; Customise eldoc
 (use-package eldoc
