@@ -11,7 +11,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        General settings
+;;        General Settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Disable TLS1.3 (only for Emacs <= 26.2)
@@ -46,11 +46,6 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-;; Stop littering persistent/config data files
-(use-package no-littering
-  :config
-  (no-littering-theme-backups))
-
 ;; Do not show startup screen, inhibit scratch buffer message
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
@@ -64,14 +59,6 @@
 ;;        User Interface
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Disable tool bar, menu bar, and scroll bar
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-
-;; Use fullscreen always
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
 ;; Smooth scrolling and mouse support
 (setq redisplay-dont-pause t
       scroll-margin 1
@@ -81,15 +68,6 @@
       mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
       mouse-wheel-progressive-speed nil            ;; don't accelerate scrolling
       mouse-wheel-follow-mouse 't)                 ;; scroll window under mouse
-
-;; Line highlight
-(global-hl-line-mode)
-
-;; Display column number on modeline
-(column-number-mode)
-
-;; Enable line numbers on all buffers
-(global-display-line-numbers-mode t)
 
 ;; vim-like undo
 (use-package undo-tree
@@ -134,10 +112,39 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain
       ediff-split-window-function 'split-window-horizontally)
 
+;; Highlighting updgrade with evil-anzu
+(use-package evil-anzu
+  :config
+  (global-anzu-mode +1))
+
+;; Quick help for keybindings
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.2))
+
+;; Avy to jump around
+(use-package avy
+  :init
+  (evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
+  (setq avy-background t
+        avy-single-candidate-jump nil))
+
+;; Dim inactive buffers
+(use-package dimmer
+  :init
+  (setq dimmer-fraction 0.3)
+  :config
+  (dimmer-mode t))
+
+;; Use short answers
+(setq use-short-answers t)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        Colours and Fonts
+;;        Appearance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Use spacemacs-theme
@@ -145,7 +152,10 @@
   :init
   (setq spacemacs-theme-comment-italic t)
   :config
-  (load-theme 'spacemacs-dark))
+  (load-theme 'spacemacs-dark)
+  (add-hook 'server-after-make-frame-hook
+	    (lambda ()
+	      (load-theme 'spacemacs-dark t))))
 
 ;; UTF-8 everywhere
 (setq prefer-coding-system 'utf-8)
@@ -154,20 +164,56 @@
 (add-to-list 'default-frame-alist
 	     '(font . "FiraCode Nerd Font-11"))
 
+;; Use doom-modeline
+(use-package doom-modeline
+  :after (spacemacs-theme)
+  :config
+  (doom-modeline-mode 1)
+  (setq doom-modeline-major-mode-icon t
+	doom-modeline-modal-icon nil
+        doom-modeline-height 30))
+
+;; Line highlight
+(global-hl-line-mode)
+
+;; Display column number on modeline
+(column-number-mode)
+
+;; Enable line numbers on all buffers
+(global-display-line-numbers-mode t)
+
+;; Disable tool bar, menu bar, and scroll bar
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Use fullscreen always
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (set-frame-parameter nil 'fullscreen 'fullboth)
+
+;; Delimiter colouring
+(use-package rainbow-delimiters
+  :hook ((org-mode prog-mode) . rainbow-delimiters-mode))
+
+;; Add Nerd icons
+(use-package nerd-icons
+  :config
+  (setq nerd-icons-color-icons nil))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        Files and Backups
+;;        Cache Files and Backups
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Store backups in separate folder
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-      backup-by-copying t    ;; Don't delink hardlinks
-      version-control t      ;; Use version numbers on backups
-      delete-old-versions t  ;; Automatically delete excess backups
-      kept-new-versions 20   ;; Number of new version to keep
-      kept-old-versions 5    ;; Number of old version to keep
-      )
+(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
+;; Stop littering persistent/config data files
+(use-package no-littering
+  :init
+  (setq no-littering-etc-directory (concat user-emacs-directory "etc/")
+	no-littering-var-directory (concat user-emacs-directory "var/"))
+  :config
+  (no-littering-theme-backups))
 
 
 
@@ -187,10 +233,26 @@
 ;; Auto-insert closing delimiters
 (electric-pair-mode t)
 
+;; Indentation help
+(use-package highlight-indent-guides
+  :after (spacemacs-theme)
+  :config
+  (setq highlight-indent-guides-method 'character
+	highlight-indent-guides-character ?|
+	highlight-indent-guides-auto-enabled nil)
+  (set-face-foreground 'highlight-indent-guides-character-face "DimGray")
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+
+;; Scale text shortcuts
+(use-package default-text-scale
+  :defer 1
+  :config
+  (default-text-scale-mode))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        Packages
+;;        Coding, Completion
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Better terminal emulation
@@ -238,19 +300,29 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.1)
+  (corfu-auto-delay 0.2)
   (corfu-quit-no-match 'separator)
+  (corfu-preselect 'prompt)
   :config
-  (keymap-unset corfu-map "RET")
-  (setq tab-always-indent 'complete)
+  ;; (keymap-unset corfu-map "RET")
+  ;; (setq tab-always-indent 'complete)
+  :bind
+  (:map corfu-map
+	("TAB" . corfu-next)
+	([tab] . corfu-next)
+	("S-TAB" . corfu-previous)
+	([backtab] . corfu-previous))
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  (add-hook 'eshell-mode-hook (lambda ()
+                              (setq-local corfu-auto nil)
+                              (corfu-mode))))
 
 ;; Customise eldoc
 (use-package eldoc
   :config
   ;; (setq eldoc-echo-area-use-multiline-p nil)
-  (setq eldoc-idle-delay 1.5))
+  (setq eldoc-idle-delay 2.0))
 
 ;; IDE functionality using eglot
 (use-package eglot
@@ -302,7 +374,21 @@
 (use-package gptel
   :config
   (setq gptel-model 'claude-3.7-sonnet
-	gptel-backend (gptel-make-gh-copilot "Copilot")))
+        gptel-backend (gptel-make-gh-copilot "Copilot")))
+
+;; ;; vscode-cp-proxy for enterprise access to Github Copilot
+;; (use-package vscode-cp-proxy
+;;   :load-path load-path
+;;   :init
+;;   (setq ;; skip setq and just use gptel-make-openai if you don't want this to be the default backend.
+;;     gptel-backend
+;;     (gptel-make-openai "gptel-vscode-cp-proxy"
+;;     :host vscode-cp-proxy-host-port
+;;     :protocol "http"
+;;     :endpoint "/openai/v1/chat/completions"
+;;     :stream t
+;;     :key 'vscode-cp-proxy-set-token
+;;     :models '(gpt-4.1 gpt5))))
 
 ;; git interfacing with magit
 (use-package magit
@@ -317,46 +403,11 @@
   :config
   (evil-commentary-mode))
 
-;; Highlighting updgrade with evil-anzu
-(use-package evil-anzu
-  :config
-  (global-anzu-mode +1))
 
-;; Delimiter colouring
-(use-package rainbow-delimiters
-  :hook ((org-mode prog-mode) . rainbow-delimiters-mode))
 
-;; Indentation help
-(use-package highlight-indent-guides
-  :after (spacemacs-theme)
-  :config
-  (setq highlight-indent-guides-method 'character
-	highlight-indent-guides-character ?|
-	highlight-indent-guides-auto-enabled nil)
-  (set-face-foreground 'highlight-indent-guides-character-face "DimGray")
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
-
-;; Quick help for keybindings
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.2))
-
-;; Avy to jump around
-(use-package avy
-  :init
-  (evil-define-key 'normal 'global (kbd "f") 'avy-goto-char-2)    ;; Set f as trigger key 
-  (setq avy-background t
-        avy-single-candidate-jump nil))
-
-;; Use doom-modeline
-(use-package doom-modeline
-  :after (spacemacs-theme)
-  :config
-  (doom-modeline-mode 1)
-  (setq doom-modeline-major-mode-icon t
-        doom-modeline-height 30))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;        Misc
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Read, annotate and work with pdfs
 (use-package pdf-tools
@@ -372,23 +423,6 @@
   (add-hook 'pdf-view-mode-hook 'pdf-history-minor-mode)
   (add-hook 'pdf-view-mode-hook 'pdf-isearch-minor-mode))
 
-;; Add Nerd icons
-(use-package nerd-icons
-  :config
-  (setq nerd-icons-color-icons nil))
-
-;; Dim inactive buffers
-(use-package dimmer
-  :config
-  (setq dimmer-fraction 0.5)
-  :init
-  (dimmer-mode t))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        Misc
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
