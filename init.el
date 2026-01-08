@@ -46,6 +46,12 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
+;; Fix python-mode treesit error
+(require 'treesit)
+(defvar treesit-extra-load-path nil)
+(setq treesit-extra-load-path
+      (cons "/home/ymvariya/.emacs.d/var/treesit/" treesit-extra-load-path))
+
 ;; Do not show startup screen, inhibit scratch buffer message
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
